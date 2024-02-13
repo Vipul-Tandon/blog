@@ -1,0 +1,27 @@
+Rails.application.routes.draw do
+  root "articles#index"
+
+  get '/articles/:article_id/comments', to: 'comments#index', as: 'article_comments'
+  post '/articles/:article_id/comments', to: 'comments#create'
+  
+  # Concept of Shallow nested routes
+  get '/comments/:id', to: 'comments#show', as: 'comment'
+  delete '/comments/:id', to: 'comments#destroy'
+
+
+  get '/articles', to: 'articles#index', as: 'articles'
+  post '/articles', to: 'articles#create'
+  get '/articles/:id', to: 'articles#show', as: 'article'
+  patch '/articles/:id', to: 'articles#update'
+  delete '/articles/:id', to: 'articles#destroy'
+
+
+  get '/users', to: 'users#index'
+  post '/users', to: 'users#create'
+  get '/users/:_username', to: 'users#show'
+  put '/users/:_username', to: 'users#update'
+  delete '/users/:_username', to: 'users#destroy'
+  
+  post '/login', to: 'authentication#login'
+  get '/*a', to: 'application#not_found'
+end
