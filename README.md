@@ -1,24 +1,19 @@
-# README
+# Blog App
+> A rails application project with CRUD functionalities where users can register and submit their articles and other users can comment on those articles.
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# Features
 
-Things you may want to cover:
+* Authentication:
+  
+  * First time users have to register with username, email and password
+  * User login with username and password
+    
+* Authorization:
 
-* Ruby version
+  * One cannot manage articles and view user profile without being authenticated
+  * One cannot edit or delete articles and comments created by other users
+ 
+* Manage articles with basic functionalities:
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+  * Create, update and delete articles
+  * Add or delete comments on an article
