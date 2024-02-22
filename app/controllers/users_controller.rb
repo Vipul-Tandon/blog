@@ -29,18 +29,27 @@ class UsersController < ApplicationController
 
     
     def update
-        unless @user.update(user_params)
-        render json: { errors: @user.errors.full_messages },
-                status: :unprocessable_entity
+        if @user == current_user
+            unless @user.update(user_params)
+            render json: { errors: @user.errors.full_messages },
+                    status: :unprocessable_entity
+            end
+        else
+            render json: { error: 'Unauthorized' }, status: :unauthorized
         end
     end
-
+    
     
     def destroy
-        @user.destroy
+        if @user == current_user
+            @user.destroy
+            head :no_content
+        else
+            render json: { error: 'Unauthorized' }, status: :unauthorized
+        end
     end
-
-
+    
+    
     private
     def find_user
         @user = User.find_by_username!(params[:_username])

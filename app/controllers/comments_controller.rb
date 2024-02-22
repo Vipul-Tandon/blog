@@ -8,11 +8,8 @@ class CommentsController < ApplicationController
     end
     
     def create
-      puts current_user.attributes
-      @article = current_user.articles.find_by(id: params[:article_id])
-      @comment = @article.comments.create(comment_params)
+      @comment = current_user.comments.new(comment_params)
       @comment.commenter = current_user.username
-
       if @comment.save
         render json: @comment, status: :created
       else
@@ -28,7 +25,10 @@ class CommentsController < ApplicationController
   
     private
       def comment_params
-        params.require(:comment).permit(:body, :status)
+        params
+          .require(:comment)
+          .permit(:body, :status)
+          .merge(article_id: params[:article_id])
       end
 end
   
