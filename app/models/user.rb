@@ -1,6 +1,7 @@
 class User < ApplicationRecord
     has_many :articles, dependent: :destroy
     has_many :comments
+    has_many :likes
     
     # Rails built-in method that provides password encryption using bcrypt.
     has_secure_password

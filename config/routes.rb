@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   root "articles#index"
 
+  post '/articles/:article_id/likes', to: 'likes#create', as: 'article_likes'
+  post '/comments/:comment_id/likes', to: 'likes#create', as: 'comment_likes'
+  delete '/likes/:id', to: 'likes#destroy'
+
   get '/articles/:article_id/comments', to: 'comments#index', as: 'article_comments'
   post '/articles/:article_id/comments', to: 'comments#create'
   
