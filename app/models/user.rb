@@ -1,5 +1,6 @@
 class User < ApplicationRecord
     has_many :articles, dependent: :destroy
+    has_many :comments
     
     # Rails built-in method that provides password encryption using bcrypt.
     has_secure_password
@@ -12,13 +13,18 @@ class User < ApplicationRecord
     validates :password,
         presence: true,
         length: { minimum: 8 },
-        if: -> { new_record? || !password.nil? }
+                                if: -> { new_record? || !password.nil? }
 
     validate :password_format
 
 
     private
         def password_format
+            # Using regular expression
+            # if password.present? && !password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/)
+            #     errors.add :password, "Must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+            # end
+
             if password.present?
                 is_uppercase = false
                 is_lowercase = false
