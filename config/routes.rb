@@ -25,6 +25,12 @@ Rails.application.routes.draw do
   get '/users/:_username', to: 'users#show'
   put '/users/:_username', to: 'users#update'
   delete '/users/:_username', to: 'users#destroy'
+
+  get '/friendships', to: 'friendships#index'
+  post '/friendships/:friend_id', to: 'friendships#create'
+  patch '/friendships/:friend_id', to: 'friendships#update'
+  delete '/friendships/:friend_id', to: 'friendships#destroy'
+  get '/friendships/pending_requests', to: 'friendships#pending_requests', as: 'pending_friend_requests'
   
   post '/login', to: 'authentication#login'
   get '/*a', to: 'application#not_found'
