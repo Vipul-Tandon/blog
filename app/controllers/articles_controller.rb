@@ -1,16 +1,23 @@
 class ArticlesController < ApplicationController
-    before_action :authorize_request, except: [:index, :show]
+    before_action :authorize_request
     before_action :find_article, except: [:create, :index, :show]
     
     def index
-        @articles = Article.all
+        friend_ids = current_user.friends.pluck(:id)
+        @articles = Article.where(status: 'public').or(Article.where(user_id: friend_ids + [current_user.id]))
         render json: @articles, status: :ok
     end
 
 
     def show
         @article = Article.find_by(id: params[:id])
-        render json: @article, show_comments: true, status: :ok
+        render json: { error: 'Article not found' }, status: :not_found unless @article
+
+        if @article.status == 'private' && (!current_user.friends.include?(@article.user) && current_user != @article.user)
+            render json: { error: "Not Authorized! You are not friends with #{@article.user.username}!!" }, status: :unauthorized
+        else
+            render json: @article, show_comments: true, status: :ok
+        end
     end
 
 
