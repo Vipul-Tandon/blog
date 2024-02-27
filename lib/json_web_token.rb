@@ -1,6 +1,6 @@
 class JsonWebToken
     # This line retrieves the secret key base from Rails application secrets and converts it to a string.
-    SECRET_KEY = Rails.application.secrets.secret_key_base.to_s
+    SECRET_KEY = Rails.application.credentials.secret_key_base.to_s
 
 
     # This method takes a payload (typically containing user information) and an optional expiration time.
