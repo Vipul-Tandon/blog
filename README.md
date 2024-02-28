@@ -1,14 +1,14 @@
 # Blog App
 > A rails application with CRUD functionalities where users can register and submit their articles and other users can comment on those articles.
 
-# Featurs
+# Features
 
 - [x] 1. Signup +  validation on of length, format of email, password, mobile no 
     - [ ] 1.1 Account verification using link(recommended) or OTP(alternate option)
 
 - [x] 2. Login + validation on email and password format
     - [X] 2.1 JWT for authentication and authorization
-    - [ ] 2.2 Forgot password controller => Action1 - for sending OTP on email, Action2 - for verifying OTP and resetting the password
+    - [x] 2.2 Forgot password controller => Action1 - for sending OTP on email, Action2 - for verifying OTP and resetting the password
 
 - [x] 3. Account update using authorisation token 
     - [ ] 3.1 Refresh token concept incase of token gets expire (learn and implement)
