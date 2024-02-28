@@ -32,6 +32,10 @@ Rails.application.routes.draw do
   delete '/friendships/:friend_id', to: 'friendships#destroy'
   get '/friendships/pending_requests', to: 'friendships#pending_requests', as: 'pending_friend_requests'
 
+  post '/password_resets', to: 'password_resets#create'
+  put '/password_resets', to: 'password_resets#update'
+  
+
   get '/blocked_users', to: 'blocked_users#index'
   post '/blocked_users/:user_id', to: 'blocked_users#create'
   delete '/blocked_users/:user_id', to: 'blocked_users#destroy'
