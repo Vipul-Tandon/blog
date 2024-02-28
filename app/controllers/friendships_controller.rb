@@ -12,6 +12,14 @@ class FriendshipsController < ApplicationController
     def create
         if is_user_blocked(@friend)
             render json: { error: 'User not found ~X<o>X~' }, status: :unprocessable_entity
+        elsif current_user.friendships.where(friend_id: @friend.id, status: "declined").exists?
+            declined_friendship = current_user.friendships.where(friend_id: @friend.id, status: "declined").order(cooldown: :desc).first
+            if declined_friendship.cooldown.present? && declined_friendship.cooldown > 5.minutes.ago
+                render json: { error: "Cannot send friend request yet. Cooldown period active" }, status: :unprocessable_entity
+            else
+                declined_friendship.update(status: "pending", cooldown: nil)
+                render json: { message: "Friend request sent to #{@friend.username}" }, status: :created
+            end
         else
             @friendship = current_user.friendships.build(friend_id: params[:friend_id], status: "pending")
             if @friendship.save
@@ -25,7 +33,6 @@ class FriendshipsController < ApplicationController
     # Accept friend request
     def update
         @friendship = current_user.inverse_friendships.find_by(user: @friend)
-        # render json: @friendship
         if @friendship.update(status: "accepted")
             render json: { message: "Friend request from #{@friend.username} accepted" }, status: :ok
         else
@@ -34,10 +41,14 @@ class FriendshipsController < ApplicationController
     end
 
     # Reject friend request
-    def destroy
+    def reject
         @friendship = current_user.inverse_friendships.find_by(user: @friend)
-        @friendship.destroy
-        head :no_content
+        if @friendship.update(status: "declined")
+            @friendship.update(cooldown: Time.current + 5.minutes)
+            render json: { message: "Friend request from #{@friend.username} declined" }, status: :ok
+        else
+            render json: { errors: @friendship.errors.full_messages }, status: :unprocessable_entity
+        end
     end
 
     

@@ -29,7 +29,7 @@ Rails.application.routes.draw do
   get '/friendships', to: 'friendships#index'
   post '/friendships/:friend_id', to: 'friendships#create'
   patch '/friendships/:friend_id', to: 'friendships#update'
-  delete '/friendships/:friend_id', to: 'friendships#destroy'
+  put '/friendships/:friend_id', to: 'friendships#reject'
   get '/friendships/pending_requests', to: 'friendships#pending_requests', as: 'pending_friend_requests'
 
   post '/password_resets', to: 'password_resets#create'
