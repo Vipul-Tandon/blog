@@ -35,6 +35,11 @@ Rails.application.routes.draw do
   post '/password_resets', to: 'password_resets#create'
   put '/password_resets', to: 'password_resets#update'
   
+
+  get '/blocked_users', to: 'blocked_users#index'
+  post '/blocked_users/:user_id', to: 'blocked_users#create'
+  delete '/blocked_users/:user_id', to: 'blocked_users#destroy'
+  
   post '/login', to: 'authentication#login'
   get '/*a', to: 'application#not_found'
 end

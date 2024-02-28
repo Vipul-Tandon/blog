@@ -10,11 +10,15 @@ class FriendshipsController < ApplicationController
     
     # Send friend request
     def create
-        @friendship = current_user.friendships.build(friend_id: params[:friend_id], status: "pending")
-        if @friendship.save
-            render json: { message: "Friend request sent to #{@friend.username}" }, status: :created
+        if is_user_blocked(@friend)
+            render json: { error: 'User not found ~X<o>X~' }, status: :unprocessable_entity
         else
-            render json: { errors: @friendship.errors.full_messages }, status: :unprocessable_entity
+            @friendship = current_user.friendships.build(friend_id: params[:friend_id], status: "pending")
+            if @friendship.save
+                render json: { message: "Friend request sent to #{@friend.username}" }, status: :created
+            else
+                render json: { errors: @friendship.errors.full_messages }, status: :unprocessable_entity
+            end
         end
     end
 
@@ -46,5 +50,12 @@ class FriendshipsController < ApplicationController
     private
         def set_friend
             @friend = User.find_by(id: params[:friend_id])
+        end
+
+        def is_user_blocked(friend)
+            if current_user.blocked_users.exists?(blocked_user_id: friend.id) || friend.blocked_users.exists?(blocked_user_id: current_user.id)
+                return true
+            end
+            return false
         end
 end
