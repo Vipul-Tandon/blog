@@ -14,7 +14,7 @@ class FriendshipsController < ApplicationController
             render json: { error: 'User not found ~X<o>X~' }, status: :unprocessable_entity
         elsif current_user.friendships.where(friend_id: @friend.id, status: "declined").exists?
             declined_friendship = current_user.friendships.where(friend_id: @friend.id, status: "declined").order(cooldown: :desc).first
-            if declined_friendship.cooldown.present? && declined_friendship.cooldown > 5.minutes.ago
+            if declined_friendship.cooldown.present? && declined_friendship.cooldown > 30.days.ago
                 render json: { error: "Cannot send friend request yet. Cooldown period active" }, status: :unprocessable_entity
             else
                 declined_friendship.update(status: "pending", cooldown: nil)
@@ -44,7 +44,7 @@ class FriendshipsController < ApplicationController
     def reject
         @friendship = current_user.inverse_friendships.find_by(user: @friend)
         if @friendship.update(status: "declined")
-            @friendship.update(cooldown: Time.current + 5.minutes)
+            @friendship.update(cooldown: 30.days.from_now)
             render json: { message: "Friend request from #{@friend.username} declined" }, status: :ok
         else
             render json: { errors: @friendship.errors.full_messages }, status: :unprocessable_entity
