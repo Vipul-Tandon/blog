@@ -21,7 +21,7 @@
 
 - [x] 5. Add friends - request would be in pending, accepted and decline
     - [ ] 5.1  if decline can send friend request again after 30days
-    - [ ] 5.2 Block user and remove from friend list. so after unblocking also user will not be in his friend list.
+    - [X] 5.2 Block user and remove from friend list. so after unblocking also user will not be in his friend list.
   
 - [x] 6. Make post public, private and only_friends
 
