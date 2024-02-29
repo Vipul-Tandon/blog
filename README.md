@@ -4,7 +4,7 @@
 # Features
 
 - [x] 1. Signup +  validation on of length, format of email, password, mobile no 
-    - [ ] 1.1 Account verification using link(recommended) or OTP(alternate option)
+    - [x] 1.1 Account verification using link(recommended) or OTP(alternate option)
 
 - [x] 2. Login + validation on email and password format
     - [X] 2.1 JWT for authentication and authorization
