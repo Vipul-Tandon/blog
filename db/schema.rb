@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_28_182648) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_29_070540) do
+  create_table "account_verifications", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.boolean "email_confirmed", default: false
+    t.string "confirm_token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_account_verifications_on_user_id"
+  end
+
   create_table "articles", force: :cascade do |t|
     t.string "title"
     t.text "body"
@@ -71,6 +80,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_28_182648) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "account_verifications", "users"
   add_foreign_key "articles", "users"
   add_foreign_key "blocked_users", "users"
   add_foreign_key "blocked_users", "users", column: "blocked_user_id"
