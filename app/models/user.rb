@@ -1,10 +1,14 @@
 class User < ApplicationRecord
+    after_create :create_account_verification
+
     include Blockable
     include Friendable
 
     has_many :articles, dependent: :destroy
-    has_many :comments
+    has_many :comments, dependent: :destroy
     has_many :likes
+
+    has_one :account_verification, dependent: :destroy
 
     
     # Rails built-in method that provides password encryption using bcrypt.
@@ -24,6 +28,12 @@ class User < ApplicationRecord
 
 
     private
+
+        def create_account_verification
+            AccountVerification.create(user: self)
+            UserMailer.registration_confirmation(self).deliver_now
+        end
+
         def password_format
             # Using regular expression
             # if password.present? && !password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/)
