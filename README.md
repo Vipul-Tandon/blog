@@ -17,7 +17,7 @@
     - [ ] 4.1 Read all post and add pagination  
     - [x] 4.2  Comments (CRUD) on post
     - [x] 4.3 Like and unlike  on Posts and comments (use polymorphic association)
-    - [ ] 4.4 seprate api for getting all likes on post and comments 
+    - [x] 4.4 seprate api for getting all likes on post and comments 
 
 - [x] 5. Add friends - request would be in pending, accepted and decline
     - [x] 5.1  if decline can send friend request again after 30days
