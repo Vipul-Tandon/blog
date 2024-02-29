@@ -3,6 +3,8 @@ Rails.application.routes.draw do
 
   post '/articles/:article_id/likes', to: 'likes#create', as: 'article_likes'
   post '/comments/:comment_id/likes', to: 'likes#create', as: 'comment_likes'
+  get '/articles/:article_id/likes', to: 'likes#article_likes'
+  get '/comments/:comment_id/likes', to: 'likes#comment_likes'
   delete '/likes/:id', to: 'likes#destroy'
 
   get '/articles/:article_id/comments', to: 'comments#index', as: 'article_comments'
