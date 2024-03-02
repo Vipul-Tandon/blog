@@ -4,7 +4,7 @@ class ArticlesController < ApplicationController
     
     def index
         friend_ids = current_user.friends.pluck(:id)
-        @articles = Article.where(status: 'public').or(Article.where(user_id: friend_ids + [current_user.id]))
+        @articles = Article.where(status: 'public').or(Article.where(user_id: friend_ids + [current_user.id])).page(params[:page])
         render json: @articles, status: :ok
     end
 
