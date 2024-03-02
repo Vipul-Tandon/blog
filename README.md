@@ -14,7 +14,7 @@
     - [x] 3.1 Refresh token concept incase of token gets expire (learn and implement)
 
 - [x] 4. Create, update and delete Post  
-    - [ ] 4.1 Read all post and add pagination  
+    - [x] 4.1 Read all post and add pagination  
     - [x] 4.2  Comments (CRUD) on post
     - [x] 4.3 Like and unlike  on Posts and comments (use polymorphic association)
     - [x] 4.4 seprate api for getting all likes on post and comments 
