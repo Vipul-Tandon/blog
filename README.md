@@ -11,7 +11,7 @@
     - [x] 2.2 Forgot password controller => Action1 - for sending OTP on email, Action2 - for verifying OTP and resetting the password
 
 - [x] 3. Account update using authorisation token 
-    - [ ] 3.1 Refresh token concept incase of token gets expire (learn and implement)
+    - [x] 3.1 Refresh token concept incase of token gets expire (learn and implement)
 
 - [x] 4. Create, update and delete Post  
     - [ ] 4.1 Read all post and add pagination  
