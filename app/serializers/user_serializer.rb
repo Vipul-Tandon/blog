@@ -5,6 +5,8 @@ class UserSerializer < ActiveModel::Serializer
 
   attribute :friend_status, if: -> { @instance_options[:show_friend_status] }
 
+  attribute :refresh_token, if: -> { @instance_options[:show_refresh_token] }
+
   def article_count
     object.articles.count
   end

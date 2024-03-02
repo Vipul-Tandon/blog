@@ -3,6 +3,7 @@ class User < ApplicationRecord
 
     include Blockable
     include Friendable
+    include TokenManagement
 
     has_many :articles, dependent: :destroy
     has_many :comments, dependent: :destroy

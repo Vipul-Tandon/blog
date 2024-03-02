@@ -43,6 +43,8 @@ Rails.application.routes.draw do
   delete '/blocked_users/:user_id', to: 'blocked_users#destroy'
   
   get '/account_verification/:confirm_token', to: 'account_verifications#confirm_email', as: 'confirm_email'
+
+  post '/refresh_access_token/:refresh_token', to: 'authentication#refresh_access_token'
   
   post '/login', to: 'authentication#login'
   get '/*a', to: 'application#not_found'

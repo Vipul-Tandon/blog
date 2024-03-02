@@ -10,7 +10,7 @@ class UsersController < ApplicationController
 
     def show
         if @user == current_user
-            render json: @user, show_articles: true, status: :ok
+            render json: @user, show_articles: true, show_refresh_token: true, status: :ok
         else
             render json: { error: 'Unauthorized' }, status: :unauthorized
         end
