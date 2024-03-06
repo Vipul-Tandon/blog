@@ -34,6 +34,7 @@ class FriendshipsController < ApplicationController
     def update
         @friendship = current_user.inverse_friendships.find_by(user: @friend)
         if @friendship.update(status: "accepted")
+            @friendship.update_shared_articles_status
             render json: { message: "Friend request from #{@friend.username} accepted" }, status: :ok
         else
             render json: { errors: @friendship.errors.full_messages }, status: :unprocessable_entity
@@ -45,6 +46,7 @@ class FriendshipsController < ApplicationController
         @friendship = current_user.inverse_friendships.find_by(user: @friend)
         if @friendship.update(status: "declined")
             @friendship.update(cooldown: 30.days.from_now)
+            @friendship.update_shared_articles_status
             render json: { message: "Friend request from #{@friend.username} declined" }, status: :ok
         else
             render json: { errors: @friendship.errors.full_messages }, status: :unprocessable_entity

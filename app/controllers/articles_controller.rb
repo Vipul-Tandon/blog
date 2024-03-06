@@ -5,7 +5,7 @@ class ArticlesController < ApplicationController
     def index
         friend_ids = current_user.friends.pluck(:id)
         @articles = Article.where(status: 'public').or(Article.where(user_id: friend_ids + [current_user.id])).page(params[:page])
-        render json: @articles, status: :ok
+        render json: @articles, show_share_count: true, status: :ok
     end
 
 
@@ -16,7 +16,7 @@ class ArticlesController < ApplicationController
         if @article.status == 'private' && (!current_user.friends.include?(@article.user) && current_user != @article.user)
             render json: { error: "Not Authorized! You are not friends with #{@article.user.username}!!" }, status: :unauthorized
         else
-            render json: @article, show_comments: true, status: :ok
+            render json: @article, show_comments: true, show_shared_by_users: true, status: :ok
         end
     end
 
