@@ -25,8 +25,8 @@
   
 - [x] 6. Make post public, private and only_friends
 
-- [ ] 7. Share post( public and  only_friend only)
-  - [ ] 7.1 if share post of friend , after unfriend share post should be removed. Or can set set the status of shared post deactivated so that when they become friend again shared post can be visible in his profile. This happens in linkedin if we add some skills and people endorse on that skill. after endorsing we remove it and add again then people who have endorse on that skill will still be visible
+- [x] 7. Share post( public and  only_friend only)
+  - [x] 7.1 if share post of friend , after unfriend share post should be removed. Or can set set the status of shared post deactivated so that when they become friend again shared post can be visible in his profile. This happens in linkedin if we add some skills and people endorse on that skill. after endorsing we remove it and add again then people who have endorse on that skill will still be visible
 
 - [ ] 8. we can attach the profile_pic and cover_pic with account
   - [ ] 8.1 we can attach image/images with post and comments
