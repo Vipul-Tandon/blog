@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_02_081037) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_02_193904) do
   create_table "account_verifications", force: :cascade do |t|
     t.integer "user_id", null: false
     t.boolean "email_confirmed", default: false
@@ -71,6 +71,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_02_081037) do
     t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
+  create_table "shares", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "article_id", null: false
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["article_id"], name: "index_shares_on_article_id"
+    t.index ["user_id"], name: "index_shares_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "username"
@@ -90,4 +100,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_02_081037) do
   add_foreign_key "comments", "users"
   add_foreign_key "friendships", "users"
   add_foreign_key "likes", "users"
+  add_foreign_key "shares", "articles"
+  add_foreign_key "shares", "users"
 end

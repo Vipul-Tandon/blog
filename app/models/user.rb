@@ -4,6 +4,7 @@ class User < ApplicationRecord
     include Blockable
     include Friendable
     include TokenManagement
+    include Shareable
 
     has_many :articles, dependent: :destroy
     has_many :comments, dependent: :destroy

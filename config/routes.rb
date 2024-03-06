@@ -45,6 +45,10 @@ Rails.application.routes.draw do
   get '/account_verification/:confirm_token', to: 'account_verifications#confirm_email', as: 'confirm_email'
 
   post '/refresh_access_token/:refresh_token', to: 'authentication#refresh_access_token'
+
+  get '/shares', to: 'shares#index'
+  post '/shares/:article_id', to: 'shares#create'
+  delete '/shares/:id', to: 'shares#destroy'
   
   post '/login', to: 'authentication#login'
   get '/*a', to: 'application#not_found'
