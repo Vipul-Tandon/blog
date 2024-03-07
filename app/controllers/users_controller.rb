@@ -19,6 +19,9 @@ class UsersController < ApplicationController
    
     def create
         @user = User.new(user_params)
+        @user.profile_pic = upload_picture(params[:profile_pic]) if params[:profile_pic].present?
+        @user.cover_pic = upload_picture(params[:cover_pic]) if params[:cover_pic].present?
+
         if @user.save
             render json: @user, status: :created
         else
@@ -30,9 +33,13 @@ class UsersController < ApplicationController
     
     def update
         if @user == current_user
-            unless @user.update(user_params)
-            render json: { errors: @user.errors.full_messages },
-                    status: :unprocessable_entity
+            if @user.update(user_params)
+                @user.profile_pic = upload_picture(params[:profile_pic]) if params[:profile_pic].present?
+                @user.cover_pic = upload_picture(params[:cover_pic]) if params[:cover_pic].present?
+                @user.save
+                render json: @user, status: :ok
+            else
+                render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
             end
         else
             render json: { error: 'Unauthorized' }, status: :unauthorized
@@ -42,6 +49,7 @@ class UsersController < ApplicationController
     
     def destroy
         if @user == current_user
+            delete_cloudinary_images(@user)
             @user.destroy
             head :no_content
         else
@@ -59,7 +67,21 @@ class UsersController < ApplicationController
 
     def user_params
         params.permit(
-        :name, :username, :email, :password, :password_confirmation
+        :name, :username, :email, :password, :password_confirmation, :profile_pic, :cover_pic
         )
+    end
+
+    def upload_picture(picture)
+        uploaded_picture = Cloudinary::Uploader.upload(picture)
+        uploaded_picture['secure_url']
+    end
+
+    def delete_cloudinary_images(user)
+        begin
+            Cloudinary::Uploader.destroy(user.profile_pic) if user.profile_pic.present?
+            Cloudinary::Uploader.destroy(user.cover_pic) if user.cover_pic.present?
+        rescue CloudinaryException => e
+            Rails.logger.error("Error deleting Cloudinary images: #{e.message}")
+        end
     end
 end

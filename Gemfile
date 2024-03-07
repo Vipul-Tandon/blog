@@ -38,6 +38,7 @@ gem "bootsnap", require: false
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
+  gem 'dotenv-rails'
 end
 
 group :development do
@@ -53,3 +54,6 @@ gem 'bcrypt', '~> 3.1', '>= 3.1.12'
 gem 'active_model_serializers', '~> 0.10.2'
 
 gem 'kaminari'
+
+gem 'cloudinary'
+gem 'ffi'
