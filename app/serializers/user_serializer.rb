@@ -1,5 +1,5 @@
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :name, :username, :email, :article_count
+  attributes :id, :name, :username, :email, :article_count, :profile_pic, :cover_pic
 
   has_many :articles, if: -> {@instance_options[:show_articles]}
 
