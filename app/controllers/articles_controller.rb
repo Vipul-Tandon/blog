@@ -16,15 +16,17 @@ class ArticlesController < ApplicationController
         if @article.status == 'private' && (!current_user.friends.include?(@article.user) && current_user != @article.user)
             render json: { error: "Not Authorized! You are not friends with #{@article.user.username}!!" }, status: :unauthorized
         else
-            render json: @article, show_comments: true, show_shared_by_users: true, status: :ok
+            render json: @article, show_comments: true, show_shared_by_users: true, show_images: true, status: :ok
         end
     end
 
 
     def create
         @article = current_user.articles.new(article_params)
+        @article.images.build(image_params) if params[:images].present?
+
         if @article.save
-            render json: @article, status: :created
+            render json: @article, show_comments: true, show_shared_by_users: true, show_images: true, status: :ok
         else
             render json: { errors: @article.errors.full_messages }, status: :unprocessable_entity
         end
@@ -32,14 +34,20 @@ class ArticlesController < ApplicationController
 
 
     def update
-        if @article.update(article_params)
-            render json: @article, status: :ok
+        @article.update(article_params) if article_params.present?
+        if params[:images].present?
+            @article.images.destroy_all
+            @article.images.build(image_params)
+        end
+        if @article.save
+            render json: @article, show_comments: true, show_shared_by_users: true, show_images: true, status: :ok
         else
-            render :edit, status: :unprocessable_entity
+            render json: { errors: @article.errors.full_messages }, status: :unprocessable_entity
         end
     end
     
     def destroy
+        delete_cloudinary_images(@article.images)
         @article.destroy
         head :no_content
     end
@@ -57,5 +65,26 @@ class ArticlesController < ApplicationController
 
         def article_params
             params.require(:article).permit(:title, :body, :status)
+        end
+
+        def image_params
+            images = Array(params.require(:images))
+            images.map do |image|
+                { url: upload_image(image) }
+            end
+        end
+
+        def upload_image(image)
+            Cloudinary::Uploader.upload(image)['secure_url']
+        end
+
+        def delete_cloudinary_images(images)
+            begin
+                images.each do |image|
+                    Cloudinary::Uploader.destroy(image.url)
+                end
+            rescue CloudinaryException => e
+                Rails.logger.error("Error deleting Cloudinary images: #{e.message}")
+            end
         end
 end

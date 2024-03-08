@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   
   # Concept of Shallow nested routes
   get '/comments/:id', to: 'comments#show', as: 'comment'
+  patch '/comments/:id', to: 'comments#update'
   delete '/comments/:id', to: 'comments#destroy'
   
   
