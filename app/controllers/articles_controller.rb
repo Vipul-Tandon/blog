@@ -16,7 +16,11 @@ class ArticlesController < ApplicationController
         if @article.status == 'private' && (!current_user.friends.include?(@article.user) && current_user != @article.user)
             render json: { error: "Not Authorized! You are not friends with #{@article.user.username}!!" }, status: :unauthorized
         else
-            render json: @article, show_comments: true, show_shared_by_users: true, show_images: true, status: :ok
+            if current_user == @article.user || current_user.read_article
+                render json: @article, show_comments: true, show_shared_by_users: true, show_images: true, status: :ok
+            else
+                render json: { message: 'Your free credits have expired. Wait for a day or buy the subscription' }, status: :unprocessable_entity
+            end
         end
     end
 

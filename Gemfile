@@ -57,3 +57,6 @@ gem 'kaminari'
 
 gem 'cloudinary'
 gem 'ffi'
+
+gem 'sidekiq'
+gem 'whenever', require: false

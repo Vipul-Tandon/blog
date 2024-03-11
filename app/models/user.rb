@@ -4,6 +4,7 @@ class User < ApplicationRecord
     include TokenManagement
     include Shareable
     include Validatable
+    include Creditable
 
     after_create :create_account_verification
 
