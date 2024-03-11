@@ -20,7 +20,12 @@
 # Learn more: http://github.com/javan/whenever
 
 set :time_zone, 'Asia/Kolkata'
+set :output, "log/cron_output.log"
 
 every 1.day, at: '00:00' do
     runner 'User.reset_credits'
+end
+
+every 1.minute do
+    runner "puts 'Hello World'" 
 end
