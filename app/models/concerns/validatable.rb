@@ -2,7 +2,7 @@ module Validatable
     extend ActiveSupport::Concern
 
     included do 
-        validates :name, length: { in: 2..50 }
+        validates :name, presence: true, length: { in: 2..50 }
         validates :email, presence: true, uniqueness: true
         validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
         validates :username, presence: true, uniqueness: true

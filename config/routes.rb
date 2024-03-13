@@ -25,9 +25,9 @@ Rails.application.routes.draw do
   
   get '/users', to: 'users#index'
   post '/users', to: 'users#create'
-  get '/users/:_username', to: 'users#show'
-  put '/users/:_username', to: 'users#update'
-  delete '/users/:_username', to: 'users#destroy'
+  get '/users/:id', to: 'users#show'
+  put '/users/:id', to: 'users#update'
+  delete '/users/:id', to: 'users#destroy'
   
   get '/friendships', to: 'friendships#index'
   post '/friendships/:friend_id', to: 'friendships#create'
