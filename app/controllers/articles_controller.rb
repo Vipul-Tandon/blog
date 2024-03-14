@@ -11,7 +11,11 @@ class ArticlesController < ApplicationController
 
     def show
         @article = Article.find_by(id: params[:id])
-        render json: { error: 'Article not found' }, status: :not_found unless @article
+        if @article == nil
+            render json: { error: 'Article not found' }, status: :not_found
+            return 
+        end
+        
 
         if @article.status == 'private' && (!current_user.friends.include?(@article.user) && current_user != @article.user)
             render json: { error: "Not Authorized! You are not friends with #{@article.user.username}!!" }, status: :unauthorized
