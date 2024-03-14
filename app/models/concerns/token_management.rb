@@ -4,8 +4,9 @@ module TokenManagement
     included do
       def refresh_access_token(refresh_token)
         if self.refresh_token == refresh_token && refresh_token_valid?
-          self.generate_refresh_token  
-          JsonWebToken.encode(user_id: self.id)
+          self.generate_refresh_token
+          time = Time.now + 24.hours.to_i
+          JsonWebToken.encode(user_id: self.id , exp: time.strftime("%m-%d-%Y %H:%M"))
         else
           nil
         end
