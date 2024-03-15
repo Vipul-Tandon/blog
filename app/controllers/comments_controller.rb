@@ -1,12 +1,20 @@
 class CommentsController < ApplicationController
     before_action :authorize_request
-    before_action :find_comment, only: [:update, :destroy]
+    before_action :find_comment, only: [:show, :update, :destroy]
 
 
     def index
       @article = current_user.articles.find_by(id: params[:article_id])
       @comments = @article.comments.all
       render json: @comments, status: :ok
+    end
+
+    def show
+      if current_user.username == @comment.commenter
+        render json: @comment, status: :ok
+      else
+        render json: { error: 'Unauthorized' }, status: :unauthorized
+      end
     end
     
 
