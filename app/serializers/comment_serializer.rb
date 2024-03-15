@@ -6,4 +6,8 @@ class CommentSerializer < ActiveModel::Serializer
   def like_count
     object.likes.count
   end
+
+  def commenter
+    object.user.username
+  end
 end

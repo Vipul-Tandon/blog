@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_10_122524) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_15_083744) do
   create_table "account_verifications", force: :cascade do |t|
     t.integer "user_id", null: false
     t.boolean "email_confirmed", default: false
@@ -40,7 +40,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_10_122524) do
   end
 
   create_table "comments", force: :cascade do |t|
-    t.string "commenter"
     t.text "body"
     t.integer "article_id", null: false
     t.datetime "created_at", null: false
