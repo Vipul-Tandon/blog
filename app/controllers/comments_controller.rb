@@ -1,17 +1,29 @@
 class CommentsController < ApplicationController
     before_action :authorize_request
-    before_action :find_comment, only: [:update, :destroy]
+    before_action :find_comment, only: [:show, :update, :destroy]
 
 
     def index
       @article = current_user.articles.find_by(id: params[:article_id])
-      @comments = @article.comments.all
-      render json: @comments, status: :ok
+      if @article
+        @comments = @article.comments.all
+        render json: @comments, status: :ok
+      else
+        render json: { error: 'Article not found' }, status: :not_found
+      end
+    end
+
+    def show
+      if current_user == @comment.user
+        render json: @comment, status: :ok
+      else
+        render json: { error: 'Unauthorized' }, status: :unauthorized
+      end
     end
     
 
     def create
-      @article = current_user.articles.find_by(id: params[:article_id])
+      @article = Article.find_by(id: params[:article_id])
 
       if @article.nil?
         render json: { errors: ['Article not found'] }, status: :not_found
@@ -19,7 +31,7 @@ class CommentsController < ApplicationController
       end
 
       @comment = @article.comments.new(comment_params)
-      @comment.commenter = current_user.username
+      @comment.user = current_user
       @comment.images.build(image_params) if params[:images].present?
 
       if @comment.save
@@ -31,7 +43,7 @@ class CommentsController < ApplicationController
 
 
     def update
-    if current_user.username == @comment.commenter
+    if current_user == @comment.user
       if @comment.update(comment_params)
         if params[:images].present?
           @comment.images.destroy_all
@@ -53,7 +65,7 @@ class CommentsController < ApplicationController
 
 
   def destroy
-    if current_user.username == @comment.commenter
+    if current_user == @comment.user
       delete_cloudinary_images(@comment.images)
       @comment.destroy
       head :no_content
