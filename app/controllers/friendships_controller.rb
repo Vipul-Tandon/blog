@@ -1,6 +1,6 @@
 class FriendshipsController < ApplicationController
     before_action :authorize_request
-    before_action :set_friend, except: :index
+    before_action :set_friend, except: [:index, :pending_requests]
 
     # All friends
     def index
@@ -63,6 +63,11 @@ class FriendshipsController < ApplicationController
     private
         def set_friend
             @friend = User.find_by(id: params[:friend_id])
+            if @friend != nil
+                return @friend
+            else
+                render json: { errors: 'User not found' }, status: :not_found
+            end
         end
 
         def is_user_blocked(friend)

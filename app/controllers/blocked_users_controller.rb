@@ -28,7 +28,6 @@ class BlockedUsersController < ApplicationController
     blocked_user = current_user.blocked_users.find_by(blocked_user_id: @blocked_user.id)
     if blocked_user
       blocked_user.destroy
-      render json: { message: 'User unblocked successfully' }
       head :no_content
     else
       render json: { error: 'User is not blocked' }, status: :not_found

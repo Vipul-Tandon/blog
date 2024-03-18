@@ -3,14 +3,22 @@ class LikesController < ApplicationController
 
   def article_likes 
     @article = Article.find_by(id: params[:article_id])
-    likes = @article.likes
-    render json: likes, status: :ok
+    if @article == nil
+      render json: { errors: ['Article not found'] }, status: :not_found
+    else
+      likes = @article.likes
+      render json: likes, status: :ok
+    end
   end
   
   def comment_likes 
     @comment = Comment.find_by(id: params[:comment_id])
-    likes = @comment.likes
-    render json: likes, status: :ok
+    if @comment == nil
+      render json: { errors: ['Comment not found'] }, status: :not_found
+    else
+      likes = @comment.likes
+      render json: likes, status: :ok
+    end
   end
 
   def create
