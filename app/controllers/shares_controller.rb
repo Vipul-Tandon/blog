@@ -24,7 +24,11 @@ class SharesController < ApplicationController
 
   def destroy
     @share = current_user.shares.find_by(id: params[:id])
-    @share.destroy
-    head :no_content
+    if @share != nil
+      @share.destroy
+      head :no_content
+    else
+      render json: { errors: 'Share not found' }, status: :not_found
+    end
   end
 end
