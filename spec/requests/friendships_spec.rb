@@ -1,16 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe "Friendships", type: :request do
+  let(:user) { create(:user) }
   let(:friend) { create(:user) }
   let(:token) { JsonWebToken.encode(user_id: user.id) }
-  let(:user) { create(:user) }
+  let(:headers) { {'Authorization': "Bearer #{token}"} }
 
 
   describe "POST /friendships/:friend_id" do
     context "when the friend request is sent successfully" do
 
       it "sends a friend request" do
-        post "/friendships/#{friend.id}", headers: { 'Authorization': "Bearer #{token}" }
+        post "/friendships/#{friend.id}", headers: headers
         
         expect(response).to have_http_status(:created)
         expect(JSON.parse(response.body)["message"]).to eq("Friend request sent to #{friend.username}")
@@ -21,7 +22,7 @@ RSpec.describe "Friendships", type: :request do
       
       it "returns unprocessable entity status" do
         create(:blocked_user, user: user, blocked_user: friend)
-        post "/friendships/#{friend.id}", headers: { 'Authorization': "Bearer #{token}" }
+        post "/friendships/#{friend.id}", headers: headers
         
         expect(response).to have_http_status(:unprocessable_entity)
         expect(JSON.parse(response.body)["error"]).to eq("User not found ~X<o>X~")
@@ -32,7 +33,7 @@ RSpec.describe "Friendships", type: :request do
       
       it "returns unprocessable entity status" do
         create(:friendship, user: user, friend: friend, status: "declined", cooldown: 30.days.from_now)
-        post "/friendships/#{friend.id}", headers: { 'Authorization': "Bearer #{token}" }
+        post "/friendships/#{friend.id}", headers: headers
         
         expect(response).to have_http_status(:unprocessable_entity)
         expect(JSON.parse(response.body)["error"]).to eq("Cannot send friend request yet. Cooldown period active")
@@ -47,7 +48,7 @@ RSpec.describe "Friendships", type: :request do
       
       it "returns a list of friends" do
         create(:friendship, user: user, friend: friend, status: "accepted")
-        get "/friendships", headers: { 'Authorization': "Bearer #{token}" }
+        get "/friendships", headers: headers
         
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body).size).to eq(1)
@@ -57,7 +58,7 @@ RSpec.describe "Friendships", type: :request do
     context "when user has no friends" do
       
       it "returns an empty list" do
-        get "/friendships", headers: { 'Authorization': "Bearer #{token}" }
+        get "/friendships", headers: headers
         
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).to be_empty
@@ -72,7 +73,7 @@ RSpec.describe "Friendships", type: :request do
       
       it "accepts a friend request" do
         create(:friendship, user: friend, friend: user, status: "pending")
-        patch "/friendships/#{friend.id}", headers: { 'Authorization': "Bearer #{token}" }
+        patch "/friendships/#{friend.id}", headers: headers
         
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)["message"]).to eq("Friend request from #{friend.username} accepted")
@@ -89,7 +90,7 @@ RSpec.describe "Friendships", type: :request do
       end
       
       it "rejects a friend request" do
-        put "/friendships/#{friend.id}", headers: { 'Authorization': "Bearer #{token}" }
+        put "/friendships/#{friend.id}", headers: headers
         
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)["message"]).to eq("Friend request from #{friend.username} declined")
@@ -98,7 +99,7 @@ RSpec.describe "Friendships", type: :request do
 
     context "with invalid params" do
       it "should return error" do
-        put "/friendships/hadvjwjhdvd212", headers: { 'Authorization': "Bearer #{token}" }
+        put "/friendships/hadvjwjhdvd212", headers: headers
         
         expect(response).to have_http_status(:not_found)
       end
@@ -114,7 +115,7 @@ RSpec.describe "Friendships", type: :request do
       end
 
       it "returns pending friend requests" do
-        get "/friendships/pending_requests", headers: { 'Authorization': "Bearer #{token}" }
+        get "/friendships/pending_requests", headers: headers
         
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body).size).to eq(1)
@@ -123,7 +124,7 @@ RSpec.describe "Friendships", type: :request do
 
     context "when user has no pending friend requests" do
       it "returns an empty list" do
-        get "/friendships/pending_requests", headers: { 'Authorization': "Bearer #{token}" }
+        get "/friendships/pending_requests", headers: headers
         
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).to be_empty

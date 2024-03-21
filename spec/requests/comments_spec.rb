@@ -7,12 +7,13 @@ RSpec.describe "Comments", type: :request do
   let(:token) { JsonWebToken.encode(user_id: user.id) }
   let!(:valid_params) { attributes_for(:comment) }
   let!(:invalid_params) { attributes_for(:comment, body: "") }
+  let(:headers) { {'Authorization': "Bearer #{token}"} }
   
 
   describe "GET /articles/:article_id/comments" do
     context 'when article exists' do
       it 'should return a success response' do
-        get "/articles/#{article.id}/comments", headers: { 'Authorization': "Bearer #{token}" }
+        get "/articles/#{article.id}/comments", headers: headers
         
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).not_to be_empty
@@ -22,7 +23,7 @@ RSpec.describe "Comments", type: :request do
     
     context 'when article does not exists' do
       it 'should return a success response' do
-        get "/articles/xyzad/comments", headers: { 'Authorization': "Bearer #{token}" }
+        get "/articles/xyzad/comments", headers: headers
         
         expect(response).to have_http_status(:not_found)
         expect(JSON.parse(response.body)['error']).to eq('Article not found')
@@ -36,7 +37,7 @@ RSpec.describe "Comments", type: :request do
       context "with valid params" do
         it "should return a successful response" do
           comment_params = { comment: valid_params }
-          post "/articles/#{article.id}/comments", params: comment_params, headers: { 'Authorization': "Bearer #{token}" }
+          post "/articles/#{article.id}/comments", params: comment_params, headers: headers
           
           expect(response).to have_http_status(:created)
           expect(JSON.parse(response.body)["body"]).to eq(valid_params[:body])
@@ -46,7 +47,7 @@ RSpec.describe "Comments", type: :request do
       context "with invalid params" do
         it "should return error" do
           comment_params = { comment: invalid_params }
-          post "/articles/#{article.id}/comments", params: comment_params, headers: { 'Authorization': "Bearer #{token}" }
+          post "/articles/#{article.id}/comments", params: comment_params, headers: headers
           
           expect(response).to have_http_status(:unprocessable_entity)
           expect(JSON.parse(response.body)).to include("errors")
@@ -57,7 +58,7 @@ RSpec.describe "Comments", type: :request do
     context "when the article does not exists" do
       it 'returns not found' do
         comment_params = { comment: valid_params }
-        post "/articles/xyzabcaeejdf/comments", params: comment_params, headers: { 'Authorization': "Bearer #{token}" }
+        post "/articles/xyzabcaeejdf/comments", params: comment_params, headers: headers
         
         expect(response).to have_http_status(:not_found)
         expect(JSON.parse(response.body)).to include("errors")
@@ -70,7 +71,7 @@ RSpec.describe "Comments", type: :request do
     context "when the comment exists" do
       context 'when current user is the commenter' do      
         it 'returns a success response' do
-          get "/comments/#{comment.id}", headers: { 'Authorization': "Bearer #{token}" }
+          get "/comments/#{comment.id}", headers: headers
           
           expect(response).to have_http_status(:ok)
           expect(JSON.parse(response.body)['id']).to eq(comment.id)
@@ -92,7 +93,7 @@ RSpec.describe "Comments", type: :request do
     
     context "when the comment does not exists" do
       it 'returns not found error' do
-        get "/comments/abc123", headers: { 'Authorization': "Bearer #{token}" }
+        get "/comments/abc123", headers: headers
         
         expect(response).to have_http_status(:not_found)
         expect(JSON.parse(response.body)).to include("errors")
@@ -107,7 +108,7 @@ RSpec.describe "Comments", type: :request do
       context 'when current user is the commenter' do      
         it 'returns a success response' do
           comment_params = { comment: valid_params }
-          patch "/comments/#{comment.id}", params: comment_params, headers: { 'Authorization': "Bearer #{token}" }
+          patch "/comments/#{comment.id}", params: comment_params, headers: headers
           
           expect(response).to have_http_status(:ok)
           expect(JSON.parse(response.body)['id']).to eq(comment.id)
@@ -131,7 +132,7 @@ RSpec.describe "Comments", type: :request do
     context "when the comment does not exists" do
       it 'returns not found error' do
         comment_params = { comment: valid_params }
-        patch "/comments/abc123", params: comment_params, headers: { 'Authorization': "Bearer #{token}" }
+        patch "/comments/abc123", params: comment_params, headers: headers
         
         expect(response).to have_http_status(:not_found)
         expect(JSON.parse(response.body)).to include("errors")
@@ -144,7 +145,7 @@ RSpec.describe "Comments", type: :request do
     context "when the comment exists" do
       context 'when current user is the commenter' do      
         it 'returns a success response' do
-          delete "/comments/#{comment.id}", headers: { 'Authorization': "Bearer #{token}" }
+          delete "/comments/#{comment.id}", headers: headers
           
           expect(response).to have_http_status(:no_content)
         end
@@ -165,7 +166,7 @@ RSpec.describe "Comments", type: :request do
     
     context "when the comment does not exist" do
       it 'returns not found error' do
-        delete "/comments/abc123", headers: { 'Authorization': "Bearer #{token}" }
+        delete "/comments/abc123", headers: headers
         
         expect(response).to have_http_status(:not_found)
         expect(JSON.parse(response.body)).to include("errors")

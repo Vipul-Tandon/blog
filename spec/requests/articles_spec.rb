@@ -6,6 +6,7 @@ RSpec.describe "Articles", type: :request do
   let!(:article) { create(:article, user: user) }
   let!(:valid_params) { attributes_for(:article) }
   let!(:invalid_params) { attributes_for(:article, title: "") }
+  let(:headers) { {'Authorization': "Bearer #{token}"} }
 
 
   describe "POST /articles" do
@@ -13,7 +14,7 @@ RSpec.describe "Articles", type: :request do
       
       it "should return a successful response" do
         article_params = { article: valid_params }
-        post "/articles", params: article_params, headers: { 'Authorization': "Bearer #{token}" }
+        post "/articles", params: article_params, headers: headers
         
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)["title"]).to eq(valid_params[:title])
@@ -24,7 +25,7 @@ RSpec.describe "Articles", type: :request do
       
       it "should return error" do
         article_params = { article: invalid_params }
-        post "/articles", params: article_params, headers: { 'Authorization': "Bearer #{token}" }
+        post "/articles", params: article_params, headers: headers
         
         expect(response).to have_http_status(:unprocessable_entity)
         expect(JSON.parse(response.body)).to include("errors")
@@ -38,7 +39,7 @@ RSpec.describe "Articles", type: :request do
     context 'when user is authenticated' do
       
       it 'returns a list of public articles and articles shared by friends' do
-        get "/articles", headers: { 'Authorization': "Bearer #{token}" }
+        get "/articles", headers: headers
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).to be_an_instance_of(Array)
       end
@@ -58,7 +59,7 @@ RSpec.describe "Articles", type: :request do
   describe 'GET /articles/:id' do
     context 'when the article does not exist' do
       it 'returns not found' do
-        get "/articles/invalid_id", headers: { 'Authorization': "Bearer #{token}" }
+        get "/articles/invalid_id", headers: headers
         
         expect(response).to have_http_status(:not_found)
         expect(JSON.parse(response.body)).to include("error")
@@ -77,7 +78,7 @@ RSpec.describe "Articles", type: :request do
       it 'returns the article if the user is friends with the owner of article' do
         article.update(status: 'private')
         user.friends << article.user
-        get "/articles/#{article.id}", headers: { 'Authorization': "Bearer #{token}" }
+        get "/articles/#{article.id}", headers: headers
         
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)['title']).to eq(article.title)
@@ -86,7 +87,7 @@ RSpec.describe "Articles", type: :request do
     
     context 'when the article exists and is public' do
       it 'returns the article' do
-        get "/articles/#{article.id}", headers: { 'Authorization': "Bearer #{token}" }
+        get "/articles/#{article.id}", headers: headers
         
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)['title']).to eq(article.title)
@@ -100,7 +101,7 @@ RSpec.describe "Articles", type: :request do
       context 'with valid params' do
         it 'updates the article' do
           article_params = { article: valid_params }
-          patch "/articles/#{article.id}", params: article_params, headers: { 'Authorization': "Bearer #{token}" }
+          patch "/articles/#{article.id}", params: article_params, headers: headers
           
           expect(response).to have_http_status(:ok)
           expect(JSON.parse(response.body)).to include('title', 'body')
@@ -135,7 +136,7 @@ RSpec.describe "Articles", type: :request do
     context "when the article exists" do
       
       it "should return a no content status" do
-        delete "/articles/#{article.id}", headers: { 'Authorization': "Bearer #{token}" }
+        delete "/articles/#{article.id}", headers: headers
         expect(response).to have_http_status(:no_content)
       end
       
@@ -144,7 +145,7 @@ RSpec.describe "Articles", type: :request do
     context "when the article does not exists" do
       
       it "should return an error message of article not found" do
-        delete "/articles/403", headers: { 'Authorization': "Bearer #{token}" }
+        delete "/articles/403", headers: headers
         
         expect(response).to have_http_status(:not_found)
         expect(JSON.parse(response.body)["errors"]).to eq("Article not found")

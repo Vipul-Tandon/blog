@@ -5,12 +5,13 @@ RSpec.describe "Users", type: :request do
   let!(:token) { JsonWebToken.encode(user_id: user.id)}
   let!(:valid_params) { attributes_for(:user) }
   let!(:invalid_params) { { name: nil } }
+  let(:headers) { {'Authorization': "Bearer #{token}"} }
 
 
   describe "GET /users" do
     context "when user is authorized" do
       before do
-        get '/users', headers: { 'Authorization' => "Bearer #{token}" }
+        get '/users', headers: headers
       end
 
       it 'should return an array' do
@@ -45,7 +46,7 @@ RSpec.describe "Users", type: :request do
   describe "GET /users/:id" do
     context "when user is authorized" do
       before do
-        get "/users/#{user.id}", headers: { 'Authorization' => "Bearer #{token}" }
+        get "/users/#{user.id}", headers: headers
       end
       
       it 'should return an ok HTTP status' do
@@ -69,7 +70,7 @@ RSpec.describe "Users", type: :request do
 
     context "when user is not found" do
       before do
-        get "/users/nonexistent_user", headers: { 'Authorization' => "Bearer #{token}" }
+        get "/users/nonexistent_user", headers: headers
       end
 
       it "should return user not found error" do
@@ -114,7 +115,7 @@ RSpec.describe "Users", type: :request do
     context "when user is authorized" do
       context "with valid params" do
         before do
-          put "/users/#{user.id}", headers: { 'Authorization' => "Bearer #{token}" }, params: valid_params
+          put "/users/#{user.id}", headers: headers
         end
 
         it "should return ok HTTP status" do
@@ -128,7 +129,7 @@ RSpec.describe "Users", type: :request do
 
       context "with invalid params" do
         before do
-          put "/users/#{user.id}", headers: { 'Authorization' => "Bearer #{token}" }, params: invalid_params
+          put "/users/#{user.id}", headers: headers, params: invalid_params
         end
 
         it "should return 422 error code" do
@@ -160,7 +161,7 @@ RSpec.describe "Users", type: :request do
   describe 'DELETE /users/:id' do
     context 'when the user is authenticated and authorized' do
       before do
-        delete "/users/#{user.id}", headers: { 'Authorization' => "Bearer #{token}" }
+        delete "/users/#{user.id}", headers: headers
       end
       
       it 'should return a no content response' do
