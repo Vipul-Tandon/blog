@@ -10,5 +10,9 @@ FactoryBot.define do
         credits {10}
         premium {false}
         refresh_token { SecureRandom.hex(20) }
+        transient do
+            generate_otp { SecureRandom.random_number(100000..999999) }
+        end
+        otp { generate_otp }
     end
 end  
