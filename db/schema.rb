@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_15_083744) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_22_131337) do
   create_table "account_verifications", force: :cascade do |t|
     t.integer "user_id", null: false
     t.boolean "email_confirmed", default: false
@@ -101,6 +101,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_15_083744) do
     t.string "cover_pic"
     t.integer "credits", default: 10
     t.boolean "premium", default: false
+    t.integer "otp"
     t.index ["refresh_token"], name: "index_users_on_refresh_token"
   end
 
